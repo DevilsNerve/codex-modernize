@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Preflight"
+  short_description: "Legacy modernization: preflight"
+  default_prompt: "Use $codex-modernize:modernize-preflight to check a legacy system's toolchains, source completeness, build infrastructure, and scope boundary before modernization."

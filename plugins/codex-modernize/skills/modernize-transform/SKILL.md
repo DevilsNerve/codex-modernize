@@ -1,0 +1,138 @@
+---
+name: modernize-transform
+description: "Rewrite one legacy module into a different target stack, using characterization tests and behavior-equivalence evidence. Use for cross-stack transformations, not same-stack version upgrades."
+---
+
+# modernize-transform
+
+> Adapted for Codex by DevilsNerve from Anthropic code-modernization (Apache-2.0).
+> Changed: native skills, argument binding, orchestration, paths, and authorization handling.
+
+Invocation: `$codex-modernize:modernize-transform <system-dir> <module> <target-stack>`. These are prompt arguments, not a shell command.
+
+First read [the Codex runtime guide](../../references/runtime.md). It defines
+argument binding, path validation, role execution, and how existing user
+authorization applies to checkpoints below. Resolve links relative to this
+installed `SKILL.md`, not the current working directory.
+
+
+Transform `legacy/{system}` module **`{module}`** into **{target-stack}**, with proof of behavioral
+equivalence.
+
+This is a surgical, single-module transformation — one vertical slice of the
+strangler fig. Output goes to `modernized/{system}/{module}/`.
+
+## Step 0a — Toolchain check (fail fast on target, adapt on legacy)
+
+Verify the build environment **before** planning, not when the tests
+first run:
+
+- **Target stack ({target-stack}) — required.** Runtime, package manager, and test
+  framework all respond (`java -version` + `mvn -v`, `node -v` + `npm -v`,
+  `python3 -V` + `pytest --version`, …). If any are missing, stop and
+  report what to install — the new code and its tests cannot run without
+  them, so a plan gate now would just defer the failure an hour. Suggest
+  `$codex-modernize:modernize-preflight {system} {target-stack}` for the full readiness report.
+- **Legacy stack — advisory, never a blocker.** Try a syntax-only compile
+  of the module being transformed (e.g. `cobc -fsyntax-only`). Legacy
+  code often *cannot* build locally by nature, not by misconfiguration —
+  CICS/IMS programs have no local translator, and the real runtime may be
+  a mainframe you don't have. A failed or impossible legacy compile does
+  **not** stop the transform; it changes the equivalence strategy:
+  - dual-execution proof is off the table — characterization tests
+    assert against **recorded traces / golden-master fixtures** (real
+    production outputs, captured reports/screens, SME-confirmed
+    examples) instead of live legacy runs
+  - say so explicitly in the Step 0b plan and later in
+    TRANSFORMATION_NOTES.md ("equivalence is trace-based; legacy was not
+    executable in this environment"), so reviewers know the strength of
+    the proof they're approving
+
+## Step 0b — Plan (HITL gate)
+
+**The brief is binding — read it first.** If `analysis/{system}/MODERNIZATION_BRIEF.md`
+exists, this transform is one phase (or one module of a phase) of that plan:
+read it before deciding anything below. Find the phase that names this
+command with `{module}` in scope, and treat that phase's **scope, entry criteria,
+exit criteria, and any edits the user made to it** as binding on the plan
+you present below. Entry criteria are *gates*, not context: if one is not
+met (a prior phase's exit criteria, an SME sign-off the brief requires),
+meeting it **is** the next step — do not proceed past it and do not silently
+re-plan around it. If the brief exists but no phase covers `{module}`, stop and
+ask which phase this is. The user steers execution by editing the brief; a
+brief the execution command never reads cannot steer anything.
+
+Read the source module and any business rules in `analysis/{system}/BUSINESS_RULES.md`
+that reference it. Then present the plan and **check that the user has authorized this concrete scope before writing code** (use the available user-interaction tools):
+- Which source files are in scope
+- The target module structure (packages/classes/files you'll create)
+- Which business rules / behaviors this module implements
+- How you'll prove equivalence (test strategy)
+- Anything ambiguous that needs a human decision NOW
+
+Reuse approval already given for this scope; ask only if authorization or a material decision is missing.
+
+## Step 1 — Characterization tests FIRST
+
+Before writing target code, use the **test-engineer** specialist:
+
+"Write characterization tests for legacy/{system} module {module}. Read the source,
+identify every observable behavior, and encode each as a test case with
+concrete input → expected output pairs derived from the legacy logic.
+Target framework: <appropriate for {target-stack}>. Write to
+`modernized/{system}/{module}/src/test/`. These tests define 'done' — the new code
+must pass all of them. Follow your secret-handling rules: no credential
+literal from legacy code becomes a fixture; substitute fake same-shape
+values and read anything genuinely live from environment variables."
+
+Show the characterization tests and continue within existing authorization.
+Request a decision only for unresolved behavior or scope changes.
+
+## Step 2 — Idiomatic transformation
+
+Write the target implementation in `modernized/{system}/{module}/src/main/`.
+
+**Critical:** Write code a senior {target-stack} engineer would write from the
+*specification*, not from the legacy structure. Do NOT mirror COBOL paragraphs
+as methods, do NOT preserve legacy variable names like `WS-TEMP-AMT-X`.
+Use the target language's idioms: records/dataclasses, streams, dependency
+injection, proper error types, etc.
+
+Include: domain model, service logic, API surface (REST controller or
+equivalent), and configuration. Add concise Javadoc/docstrings linking each
+class back to the rule IDs it implements.
+
+## Step 3 — Prove it
+
+Run the characterization tests:
+```bash
+cd modernized/{system}/{module} && <appropriate test command for {target-stack}>
+```
+Show the output. Investigate failures and rerun affected checks after fixes. Stop and report
+a missing prerequisite or unresolved behavior conflict; never weaken tests
+to manufacture equivalence. Skips and expected failures are pending, not proof.
+
+## Step 4 — Side-by-side review
+
+Generate `modernized/{system}/{module}/TRANSFORMATION_NOTES.md`:
+- Mapping table: legacy file:lines → target file:lines, per behavior
+- Deliberate deviations from legacy behavior (with rationale)
+- What was NOT migrated (dead code, unreachable branches) and why
+- Follow-ups for the next module that depends on this one
+
+Then show a visual diff of one representative behavior, legacy vs modern:
+```bash
+delta --side-by-side <(sed -n '<lines>p' legacy/{system}/<file>) modernized/{system}/{module}/src/main/<file>
+```
+(Fall back to `diff -y --width=160` if `delta` isn't installed.) Never
+pick a credential-bearing line range for this diff, and mask any
+credential-like literal quoted in TRANSFORMATION_NOTES.md — the notes
+live in `modernized/` and get committed.
+
+## Step 5 — Architecture review
+
+Use the **architecture-critic** specialist to review the transformed code
+against {target-stack} best practices. Apply any HIGH-severity feedback; list the rest
+in TRANSFORMATION_NOTES.md.
+
+Report: tests passing, lines of legacy retired, location of artifacts.

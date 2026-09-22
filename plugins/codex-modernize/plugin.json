@@ -1,0 +1,42 @@
+{
+  "name": "codex-modernize",
+  "version": "1.0.0+codex.20260922181544",
+  "description": "Modernize legacy systems with evidence-backed discovery, architecture maps, business rules, behavior tests, and controlled migrations.",
+  "author": {
+    "name": "DevilsNerve",
+    "url": "https://github.com/DevilsNerve"
+  },
+  "homepage": "https://github.com/DevilsNerve/codex-modernize",
+  "repository": "https://github.com/DevilsNerve/codex-modernize",
+  "license": "PolyForm-Noncommercial-1.0.0 AND Apache-2.0 AND ISC",
+  "keywords": [
+    "codex",
+    "modernization",
+    "legacy",
+    "migration",
+    "architecture"
+  ],
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Codex Modernize",
+        "shortDescription": "Discover, plan, and modernize legacy systems",
+        "longDescription": "Ten native Codex skills for readiness, assessment, topology, rules, briefs, rewrites, rebuilds, version upgrades, security review, and progress. Includes an offline viewer and validated migration helpers.",
+        "developerName": "DevilsNerve",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write",
+          "Interactive"
+        ],
+        "websiteURL": "https://github.com/DevilsNerve/codex-modernize",
+        "defaultPrompt": [
+          "Assess a legacy system and map its architecture.",
+          "Plan a version upgrade with behavior-equivalence tests.",
+          "Show modernization progress and the next useful step."
+        ]
+      }
+    }
+  }
+}

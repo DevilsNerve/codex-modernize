@@ -1,0 +1,12 @@
+{
+  "name": "codex-modernize-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Development-only browser tests for Codex Modernize",
+  "scripts": {
+    "test:viewer": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

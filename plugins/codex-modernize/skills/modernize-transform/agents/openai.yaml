@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Transform"
+  short_description: "Legacy modernization: transform"
+  default_prompt: "Use $codex-modernize:modernize-transform to rewrite one legacy module into a different target stack, using characterization tests and behavior-equivalence evidence."

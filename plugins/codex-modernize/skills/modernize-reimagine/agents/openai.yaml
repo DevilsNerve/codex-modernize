@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Reimagine"
+  short_description: "Legacy modernization: reimagine"
+  default_prompt: "Use $codex-modernize:modernize-reimagine to rebuild a legacy system from extracted business intent: specification, reviewed target architecture, service scaffolds, acceptance tests, and an AGENTS.md handoff."

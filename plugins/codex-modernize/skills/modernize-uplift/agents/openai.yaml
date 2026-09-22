@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Uplift"
+  short_description: "Legacy modernization: uplift"
+  default_prompt: "Use $codex-modernize:modernize-uplift to upgrade a legacy system to a newer version of the same stack while preserving structure."

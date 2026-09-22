@@ -1,0 +1,27 @@
+{
+  "system": "Billing example",
+  "root": {
+    "id": "sys", "name": "Billing", "kind": "system",
+    "children": [
+      {"id": "dom:billing", "name": "Billing operations", "kind": "domain", "children": [
+        {"id": "invoice", "name": "Invoice service", "kind": "module", "language": "python", "loc": 220, "file": "invoice.py"},
+        {"id": "tax", "name": "Tax calculation", "kind": "module", "language": "python", "loc": 80, "file": "tax.py"}
+      ]},
+      {"id": "dom:data", "name": "Data stores", "kind": "domain", "children": [
+        {"id": "ledger", "name": "Invoice ledger", "kind": "datastore"}
+      ]}
+    ]
+  },
+  "edges": [
+    {"source": "invoice", "target": "tax", "kind": "call"},
+    {"source": "invoice", "target": "ledger", "kind": "write"}
+  ],
+  "entryPoints": ["invoice"],
+  "deadEnds": [],
+  "observations": ["Synthetic example: invoice creation calls the tax calculation before saving to the ledger."],
+  "flows": [{"name": "Create an invoice", "persona": "Billing operator", "description": "Calculate tax and record an invoice.", "steps": [
+    {"label": "Enter invoice details", "nodes": ["invoice"]},
+    {"label": "Calculate tax", "nodes": ["tax"]},
+    {"label": "Save the invoice", "nodes": ["ledger"]}
+  ]}]
+}

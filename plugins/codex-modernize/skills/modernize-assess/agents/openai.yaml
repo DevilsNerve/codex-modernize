@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Assess"
+  short_description: "Legacy modernization: assess"
+  default_prompt: "Use $codex-modernize:modernize-assess to assess legacy code or a portfolio of systems for architecture, complexity, debt, security, and modernization options."

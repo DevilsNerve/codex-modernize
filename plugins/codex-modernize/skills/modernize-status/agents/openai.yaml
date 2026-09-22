@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Status"
+  short_description: "Legacy modernization: status"
+  default_prompt: "Use $codex-modernize:modernize-status to report modernization progress, stale artifacts, approval gaps, and secret-file hygiene without changing files."

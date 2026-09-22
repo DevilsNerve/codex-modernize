@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Map"
+  short_description: "Legacy modernization: map"
+  default_prompt: "Use $codex-modernize:modernize-map to map legacy dependencies, data lineage, entry points, and persona flows into topology.json, an offline interactive architecture viewer, and small Mermaid diagrams."

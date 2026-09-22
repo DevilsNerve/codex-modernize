@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Extract Rules"
+  short_description: "Legacy modernization: extract rules"
+  default_prompt: "Use $codex-modernize:modernize-extract-rules to extract and verify legacy business rules as cited Given/When/Then Rule Cards and a data-object catalog."

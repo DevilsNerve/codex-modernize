@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Harden"
+  short_description: "Legacy modernization: harden"
+  default_prompt: "Use $codex-modernize:modernize-harden to audit a legacy system for vulnerabilities and produce reviewed remediation patches without editing the legacy source."

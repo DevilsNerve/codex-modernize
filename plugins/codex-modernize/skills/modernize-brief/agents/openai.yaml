@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modernize Brief"
+  short_description: "Legacy modernization: brief"
+  default_prompt: "Use $codex-modernize:modernize-brief to synthesize legacy discovery into a phased modernization brief with architecture, behavior contracts, entry criteria, and approval scope."
